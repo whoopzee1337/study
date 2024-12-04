@@ -49,7 +49,7 @@ public class LoggingAspect {
                 joinPoint.getArgs());
         Object result;
         try {
-            result = joinPoint.proceed(); // выполнение метода
+            result = joinPoint.proceed();
             log.info("Around advice: метод {} выполнен успешно. Результат: {}",
                     joinPoint.getSignature().getName(),
                     result);
