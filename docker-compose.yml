@@ -1,0 +1,82 @@
+version: '3.7'
+services:
+  kubemq:
+    image: kubemq/kubemq:v2.1.0
+    container_name: kubemq
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+      - "50000:50000"
+    environment:
+      - KUBEMQ_HOST=kubemq
+      - KUBEMQ_TOKEN="39f4eded-6bca-4d95-94cf-c374c39ab2a9"
+  kafka:
+    container_name: kafkaLOANISSUE
+    image: wurstmeister/kafka:2.12-2.5.0
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_CREATE_TOPICS: 'testtopic:1:1'
+      KAFKA_DELETE_TOPIC_ENABLE: 'true'
+      KAFKA_ADVERTISED_HOST_NAME: 'localhost'
+      KAFKA_ADVERTISED_PORT: '9092'
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_MESSAGE_MAX_BYTES: 200000000
+      KAFKA_MAX_REQUEST_SIZE: 200000000
+      KAFKA_MAX_PARTITION_FETCH_BYTES: 200000000
+      KAFKA_LISTENERS: 'PLAINTEXT://:9092,SASL_PLAINTEXT://:9093'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://localhost:9092,SASL_PLAINTEXT://localhost:9093'
+      KAFKA_SASL_ENABLED_MECHANISMS: 'PLAIN,SCRAM-SHA-256,SCRAM-SHA-512'
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/opt/kafka/config/kafka_server_jaas.conf"
+      CUSTOM_INIT_SCRIPT: |-
+        echo -e 'KafkaServer {\norg.apache.kafka.common.security.scram.ScramLoginModule required\n username="admin"\n password="admin-secret";\n org.apache.kafka.common.security.plain.PlainLoginModule required\n username="adminplain"\n password="admin-secret"\n user_adminplain="admin-secret";\n  };' > /opt/kafka/config/kafka_server_jaas.conf;
+        /opt/kafka/bin/kafka-configs.sh --zookeeper zookeeper:2181 --alter --add-config 'SCRAM-SHA-256=[password=admin-secret-256],SCRAM-SHA-512=[password=admin-secret-512]' --entity-type users --entity-name admin
+  zookeeper:
+    container_name: zookeeperLOANISSUE
+    image: wurstmeister/zookeeper:3.4.6
+    ports:
+      - "2181:2181"
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: credit_service_db
+  redis:
+    container_name: redis
+    image: redis:6
+    ports:
+     - "6379:6379"
+  consul:
+    container_name: consul
+    image: consul:1.8
+    environment:
+      CONSUL_BIND_INTERFACE: eth0
+    ports:
+      - "8500:8500"
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:1.20
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "14268:14268"
+      - "14250:14250"
+      - "9411:9411"
+      - "16686:16686"
+  vault:
+    container_name: vault
+    image: vault:1.5.0
+    cap_add:
+      - IPC_LOCK
+    environment:
+      - 'VAULT_DEV_ROOT_TOKEN_ID=123123'
+    ports:
+      - 8200:8200
