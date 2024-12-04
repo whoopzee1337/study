@@ -1,1 +1,11 @@
-spring.application.name=study
+spring:
+  application:
+    name: study
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres?prepareThreshold=0
+    username: postgres
+    password: postgres
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.xml
+    enabled: true
