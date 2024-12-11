@@ -9,3 +9,11 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.xml
     enabled: true
+
+study:
+  kafka:
+    consumer:
+      groupId: study
+    server: localhost:9092
+    topics:
+      task-status: task-status

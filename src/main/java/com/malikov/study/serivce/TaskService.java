@@ -1,6 +1,7 @@
 package com.malikov.study.serivce;
 
 import com.malikov.study.dto.TaskDto;
+import com.malikov.study.kafka.TaskKafkaService;
 import com.malikov.study.mapper.TaskMapper;
 import com.malikov.study.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TaskService {
 
+    private final TaskKafkaService taskKafkaService;
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
@@ -31,6 +33,7 @@ public class TaskService {
     }
 
     public TaskDto updateTask(TaskDto taskDto) {
+        taskKafkaService.sendMessage(taskDto);
         return taskMapper.toDto(taskRepository.save(taskMapper.toEntity(taskDto)));
     }
 
