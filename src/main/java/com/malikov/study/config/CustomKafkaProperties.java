@@ -1,11 +1,13 @@
 package com.malikov.study.config;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
 
 @Getter
+@Setter
 @Component
 @ConfigurationProperties(prefix = "study.kafka")
 public class CustomKafkaProperties {
@@ -17,6 +19,7 @@ public class CustomKafkaProperties {
     private ProducerProperties producerProperties;
 
     @Getter
+    @Setter
     public static class ConsumerProperties {
         private boolean enabled = true;
         private String groupId;
@@ -27,6 +30,7 @@ public class CustomKafkaProperties {
     }
 
     @Getter
+    @Setter
     public static class ProducerProperties {
         private boolean enabled = true;
         private String compressionType = "gzip";
