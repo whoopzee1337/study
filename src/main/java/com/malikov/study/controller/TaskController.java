@@ -5,7 +5,6 @@ import com.malikov.study.serivce.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,8 +31,9 @@ public class TaskController {
     }
 
     @GetMapping("/tasks")
-    public ResponseEntity<List<TaskDto>> fetchTasks() {
-        return ResponseEntity.ok().body(taskService.fetchTasks());
+    @ResponseStatus(HttpStatus.OK)
+    public List<TaskDto> fetchTasks() {
+        return taskService.fetchTasks();
     }
 
     @GetMapping("/tasks/{id}")

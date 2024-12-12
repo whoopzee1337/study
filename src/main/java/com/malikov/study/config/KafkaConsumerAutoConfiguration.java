@@ -24,7 +24,7 @@ public class KafkaConsumerAutoConfiguration {
         log.info("Kafka Consumer initialization");
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory();
         factory.setConsumerFactory(new DefaultKafkaConsumerFactory(this.createConsumerProperties()));
-        factory.setBatchListener(false);
+        factory.setBatchListener(true);
         ContainerProperties containerProperties = factory.getContainerProperties();
         containerProperties.setMissingTopicsFatal(false);
         return factory;
